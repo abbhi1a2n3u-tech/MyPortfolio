@@ -1,4 +1,7 @@
+'use client';
+
 import style from "./page.module.css";
+import { useState, useEffect } from 'react';
 
 // Complete projects database
 const projectsData = {
@@ -145,12 +148,24 @@ function getRelatedProjects(category, currentProjectId) {
         .map(([id, data]) => ({ id, ...data }));
 }
 
-export default async function ProjectPage({ params, searchParams }) {
-    const { id } = await params;
-    const { projectName } = await searchParams;
+export default function ProjectPage({ params, searchParams }) {
+    const [lightboxOpen, setLightboxOpen] = useState(false);
+    const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+    const [loadingImages, setLoadingImages] = useState(true);
+
+    const { id } = params;
+    const { projectName } = searchParams;
 
     const project = getProjectData(id, projectName);
     const relatedProjects = getRelatedProjects(id, projectName);
+
+    // Debug: Check what paths we're getting
+    useEffect(() => {
+        console.log('Project Data:', project);
+        if (project?.src) {
+            console.log('Image Paths:', project.src);
+        }
+    }, [project]);
 
     if (!project) {
         return (
@@ -171,7 +186,27 @@ export default async function ProjectPage({ params, searchParams }) {
         );
     }
 
-    console.log(project)
+    // Function to handle image loading
+    const handleImageError = (e, index) => {
+        console.error(`Failed to load image ${index}:`, e.target.src);
+        e.target.onerror = null; // Prevent infinite loop
+        e.target.src = `https://via.placeholder.com/400x225/4f46e5/ffffff?text=Screenshot+${index + 1}`;
+        e.target.classList.remove('group-hover:scale-110');
+    };
+
+    // Function to handle image load
+    const handleImageLoad = (e) => {
+        setLoadingImages(false);
+        const skeleton = e.target.previousElementSibling;
+        if (skeleton) {
+            skeleton.style.display = 'none';
+        }
+    };
+
+    // Function to open image in new tab
+    const openImage = (imageUrl) => {
+        window.open(imageUrl, '_blank', 'noopener,noreferrer');
+    };
 
     return (
         <section className="min-h-screen w-full p-4 md:p-8 lg:p-12 bg-gradient-to-br from-gray-50 to-blue-50">
@@ -236,6 +271,10 @@ export default async function ProjectPage({ params, searchParams }) {
                                             src={project?.src?.[0] || "/default.png"}
                                             className="relative w-48 h-48 rounded-2xl shadow-2xl object-cover transform group-hover:scale-[1.02] transition-transform duration-300 border-4 border-white"
                                             alt={project.title}
+                                            onError={(e) => {
+                                                e.target.onerror = null;
+                                                e.target.src = "https://via.placeholder.com/400x400/4f46e5/ffffff?text=Project+Image";
+                                            }}
                                         />
                                     </div>
 
@@ -318,6 +357,11 @@ export default async function ProjectPage({ params, searchParams }) {
 
                                         {/* Download Button */}
                                         <button
+                                            onClick={() => {
+                                                if (project.downloadLink) {
+                                                    window.open(project.downloadLink, '_blank', 'noopener,noreferrer');
+                                                }
+                                            }}
                                             className="group relative w-full px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold rounded-2xl overflow-hidden transform hover:-translate-y-1 transition-all duration-300 hover:shadow-2xl shadow-lg"
                                         >
                                             <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-cyan-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -337,29 +381,77 @@ export default async function ProjectPage({ params, searchParams }) {
                         </div>
 
                         {/* Screenshots Gallery */}
-                        {project.src && project.src.length > 0 && (
+                        {project.src && project.src.length > 0 ? (
                             <div className="bg-white rounded-3xl shadow-xl p-6 border border-gray-100">
                                 <div className="flex items-center justify-between mb-6">
                                     <h3 className="text-xl font-bold text-gray-900">Screenshots</h3>
-                                    <span className="text-sm text-gray-500">{project.src.length} images</span>
+                                    <span className="text-sm text-gray-500">
+                                        {project.src.length} {project.src.length === 1 ? 'image' : 'images'}
+                                    </span>
                                 </div>
-                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                    {project.src.map((src, index) => (
-                                        <div key={index} className="relative group cursor-pointer">
-                                            <div className="aspect-video rounded-xl overflow-hidden shadow-lg border border-gray-200 bg-gray-100">
-                                                <img
-                                                    src={src}
-                                                    alt={`${project.title} - Screenshot ${index + 1}`}
-                                                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-300"
-                                                />
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                    {project.src.map((src, index) => {
+                                        const imageUrl = src.startsWith('http') ? src : src;
+
+                                        return (
+                                            <div
+                                                key={index}
+                                                className="relative group"
+                                            >
+                                                {/* Image Container */}
+                                                <div 
+                                                    className="aspect-video rounded-xl overflow-hidden shadow-lg border border-gray-200 bg-gradient-to-br from-gray-100 to-gray-200 relative cursor-pointer"
+                                                    onClick={() => openImage(imageUrl)}
+                                                >
+                                                    {/* Loading Skeleton */}
+                                                    {loadingImages && (
+                                                        <div className="absolute inset-0 animate-pulse bg-gray-300"></div>
+                                                    )}
+
+                                                    {/* Actual Image */}
+                                                    <img
+                                                        src={imageUrl}
+                                                        alt={`${project.title} - Screenshot ${index + 1}`}
+                                                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-300"
+                                                        loading="lazy"
+                                                        onLoad={handleImageLoad}
+                                                        onError={(e) => handleImageError(e, index)}
+                                                    />
+                                                </div>
+
+                                                {/* Hover Overlay */}
+                                                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl flex items-center justify-center pointer-events-none">
+                                                    <div className="absolute bottom-3 left-3 right-3">
+                                                        <div className="bg-black/70 text-white text-xs px-2 py-1 rounded text-center">
+                                                            Click to view
+                                                        </div>
+                                                    </div>
+                                                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                                    </svg>
+                                                </div>
+
+                                                {/* Image Number Badge */}
+                                                <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
+                                                    {index + 1}
+                                                </div>
                                             </div>
-                                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 rounded-xl flex items-center justify-center">
-                                                <svg className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                                                </svg>
-                                            </div>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        ) : (
+                            // No Screenshots Available
+                            <div className="bg-white rounded-3xl shadow-xl p-6 border border-gray-100">
+                                <h3 className="text-xl font-bold text-gray-900 mb-4">Screenshots</h3>
+                                <div className="text-center py-12">
+                                    <div className="w-20 h-20 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                                        <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <p className="text-gray-500">No screenshots available for this project.</p>
                                 </div>
                             </div>
                         )}
@@ -458,6 +550,11 @@ export default async function ProjectPage({ params, searchParams }) {
                                 </h3>
                                 <p className="text-gray-600 text-sm mb-4">Learn how to install and use this software</p>
                                 <button
+                                    onClick={() => {
+                                        if (project.tutorialVideo) {
+                                            window.open(project.tutorialVideo, '_blank', 'noopener,noreferrer');
+                                        }
+                                    }}
                                     className="w-full px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white font-semibold rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
                                 >
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -476,7 +573,7 @@ export default async function ProjectPage({ params, searchParams }) {
                                     {relatedProjects.map((related, index) => (
                                         <a
                                             key={index}
-                                            href={`/project/${id}?projectName=${related.id}`}
+                                            href={`/projects/${id}?projectName=${related.id}`}
                                             className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group"
                                         >
                                             <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center flex-shrink-0">
@@ -508,19 +605,37 @@ export default async function ProjectPage({ params, searchParams }) {
                         <div className="bg-gradient-to-br from-gray-900 to-black rounded-3xl shadow-xl p-6 text-white">
                             <h3 className="text-xl font-bold mb-4">Quick Actions</h3>
                             <div className="space-y-3">
-                                <button className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm rounded-xl hover:bg-white/20 transition-colors flex items-center justify-between group">
+                                <button 
+                                    onClick={() => {
+                                        // Add your report issue logic here
+                                        window.open(`mailto:report@example.com?subject=Issue Report: ${project.title}`, '_blank');
+                                    }}
+                                    className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm rounded-xl hover:bg-white/20 transition-colors flex items-center justify-between group"
+                                >
                                     <span>Report Issue</span>
                                     <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                     </svg>
                                 </button>
-                                <button className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm rounded-xl hover:bg-white/20 transition-colors flex items-center justify-between group">
+                                <button 
+                                    onClick={() => {
+                                        // Add your feature request logic here
+                                        window.open(`mailto:features@example.com?subject=Feature Request: ${project.title}`, '_blank');
+                                    }}
+                                    className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm rounded-xl hover:bg-white/20 transition-colors flex items-center justify-between group"
+                                >
                                     <span>Request Feature</span>
                                     <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                     </svg>
                                 </button>
-                                <button className="w-full px-4 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl hover:opacity-90 transition-opacity font-semibold">
+                                <button 
+                                    onClick={() => {
+                                        // Add your donation logic here
+                                        window.open('https://buymeacoffee.com/shivamyadav', '_blank');
+                                    }}
+                                    className="w-full px-4 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl hover:opacity-90 transition-opacity font-semibold"
+                                >
                                     Donate to Developer
                                 </button>
                             </div>

@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "export": "next export",
-    "deploy": "npm run build && npm run export && npx wrangler deploy"
+    "export": "next export"
   },
   "dependencies": {
     "next": "16.1.3",

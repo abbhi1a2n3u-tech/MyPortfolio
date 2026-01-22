@@ -1,3 +1,4 @@
+import Link from "next/link";
 import style from "./page.module.css";
 
 const projectsData = {
@@ -131,14 +132,14 @@ export default async function ProjectPage({ params, searchParams }) {
                             <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                             </svg>
-                            <a href={`/${id == "Android" ? "android" : id}`} className="group flex items-center gap-2 text-gray-600 hover:text-purple-600 transition-colors">
+                            <Link href={`/${id == "Android" ? "android" : id}`} className="group flex items-center gap-2 text-gray-600 hover:text-purple-600 transition-colors">
                                 <div className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:bg-purple-50 transition-colors">
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                     </svg>
                                 </div>
                                 <span className="text-sm font-medium capitalize">{id}</span>
-                            </a>
+                            </Link>
                             <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                             </svg>

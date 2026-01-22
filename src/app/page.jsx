@@ -23,29 +23,14 @@ export default function HomePage() {
             featured: true
         },
         {
-            title: "Portfolio Website",
-            description: "Modern responsive portfolio with Next.js",
-            category: "Web Development",
-            link: "/projects/Web",
-            tags: ["Next.js", "React", "Tailwind"],
-            featured: true
-        },
-        {
-            title: "AI Chat Assistant",
-            description: "Intelligent chatbot with natural language processing",
-            category: "AI/ML",
-            link: "/projects/AI",
-            tags: ["Python", "NLP", "OpenAI"],
+            title: "Radha Name Counter App",
+            description: "An Android app that counts the clicks for any name, popular for Radha devotees, with a voice counter feature.",
+            category: "Android Development",
+            link: "/projects/Android?projectName=RadhaNameApp",
+            tags: ["Android", "Devotional", "Name Counter"],
+            src: ["/Android/RNCA/a.webp"],
             featured: false
         },
-        {
-            title: "E-Commerce Platform",
-            description: "Full-stack e-commerce solution",
-            category: "Full Stack",
-            link: "/projects/Web",
-            tags: ["MERN", "Payment", "Auth"],
-            featured: false
-        }
     ];
 
     const stats = [

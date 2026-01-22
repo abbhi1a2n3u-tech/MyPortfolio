@@ -95,7 +95,7 @@ export default function HomePage() {
                                         color: "hover:bg-pink-100"
                                     },
                                     {
-                                        href: "https://github.com/yourusername",
+                                        href: "https://github.com/abbhi1a2n3u-tech",
                                         label: "GitHub",
                                         color: "hover:bg-gray-100"
                                     }
@@ -164,7 +164,7 @@ export default function HomePage() {
                                 src={ImageData.imgSrc}
                                 alt="About Me"
                             />
-                            <div className="absolute -bottom-6 -right-6 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 rounded-2xl shadow-xl">
+                            <div className="absolute -bottom-6 -right-3 sm:-right-6 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 rounded-2xl shadow-xl">
                                 <div className="text-sm font-bold">Available for work</div>
                             </div>
                         </div>
@@ -296,6 +296,41 @@ export default function HomePage() {
                 </div>
             </section>
 
+            {/* Project Section with Project type */}
+            <section className='py-16'>
+                <div className="max-w-7xl mx-auto px-4 sm:px-4 lg:px-8">
+                    <div className="text-center mb-12">
+                        <h2 className='text-3xl md:text-4xl font-bold text-gray-900 mb-4'>
+                            <span className='bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent'>Project's</span> Type
+                        </h2>
+                        <p className='text-gray-600 text-lg max-w-2xl mx-auto'>Here is that projects with type and you can get data with type</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {
+                            ["Android"].map((ele, index) => (
+                                <Link
+                                    key={index}
+                                    href={`/${ele.toLowerCase()}`}
+                                    className=' hover:shadow-xl hover:-translate-y-2 group transition-all rounded-2xl shadow-sm text-center px-2 py-5'
+                                >
+                                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
+                                    <span className='text-transparent bg-gradient-to-r from-purple-500 to-indigo-500 bg-clip-text font-bold'>{ele}</span>
+                                    <span>
+                                        <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors duration-300 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                        </svg>
+                                    </span>
+                                    <div className="">
+                                        Here is some {ele}'s Project, you can show of all my projects and that's work
+                                    </div>
+                                </Link>
+                            ))
+                        }
+                    </div>
+                </div>
+            </section>
+
             {/* Projects Section */}
             <section className="py-16">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -322,7 +357,7 @@ export default function HomePage() {
                                             <div className="text-6xl opacity-20">
                                                 {
                                                     project?.src ? <img src={project.src[0]} alt="" /> :
-                                                    index % 3 === 0 ? "📱" : index % 3 === 1 ? "💻" : "🤖"
+                                                        index % 3 === 0 ? "📱" : index % 3 === 1 ? "💻" : "🤖"
                                                 }
                                             </div>
                                         </div>

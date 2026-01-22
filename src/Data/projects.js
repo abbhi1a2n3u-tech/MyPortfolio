@@ -24,7 +24,8 @@ const projectsData = {
         RadhaNameApp: {
             title: "Radha Name Counter App",
             desc: "An Android app that counts the clicks for any name, popular for Radha devotees, with a voice counter feature.",
-            src: [],
+            src: ["/Android/RNCA/a.webp"],
+            videos:["/Android/RNCA/a.mp4"],
             version: "1.0.0",
             features: ["Name Click Counter", "Voice Counter", "User-friendly Interface", "Lighweight App"],
             size: "12 MB",

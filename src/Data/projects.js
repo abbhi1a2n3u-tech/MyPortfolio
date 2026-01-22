@@ -8,7 +8,7 @@ const projectsData = {
             version: "1.23.03",
             features: ["Aimbot", "Wallhack", "Unlimited Diamonds", "Auto Headshot", "No Recoil", "Speed Hack", "Anti-Ban"],
             size: "85 MB",
-            downloads: "2.4M",
+            downloads: "12",
             rating: 4.8,
             requirements: ["Android 7.0+", "2GB+ RAM", "Root Not Required"],
             lastUpdated: "2 days ago",
@@ -21,32 +21,23 @@ const projectsData = {
             status: "Active",
             releaseDate: "2024-01-15"
         },
-        
-        espHack: {
-            title: "ESP Hack Pro",
-            desc: "ESP based Android hack with radar system and wall penetration",
-            src: ["/projects/esp/1.jpg"],
-            version: "2.1.0",
-            features: ["Enemy ESP", "Item ESP", "Distance Calculator", "Radar System", "No Fog"],
-            size: "45 MB",
-            downloads: "1.8M",
-            rating: 4.6,
-            developer: "ESP Masters",
-            featured: true,
-            status: "Active"
-        },
-        autoClicker: {
-            title: "Auto Clicker Pro",
-            desc: "Advanced auto-clicker with gesture recording and macro support",
-            src: ["/projects/clicker/1.png"],
-            version: "3.5.2",
-            features: ["Gesture Recording", "Macro Support", "Timing Control", "Multi-touch"],
+        RadhaNameApp: {
+            title: "Radha Name Counter App",
+            desc: "An Android app that counts the clicks for any name, popular for Radha devotees, with a voice counter feature.",
+            src: [],
+            version: "1.0.0",
+            features: ["Name Click Counter", "Voice Counter", "User-friendly Interface", "Lighweight App"],
             size: "12 MB",
-            downloads: "5.2M",
-            rating: 4.9,
-            developer: "AutoTools Inc.",
+            downloads: "5",
+            rating: 5,
+            requirements: ["Android 4.0+", "1GB+ RAM"],
+            developer: "Shivam Yadav",
+            category: "Android",
+            tags: ["Radha", "Name Counter", "Devotional", "Android"],
+            downloadLink: "#",
             status: "Active"
         }
+
     },
     web: {
         portfolio: {
@@ -136,7 +127,7 @@ export const getProjectData = (category, projectId) => {
 export const getCategoryProjects = (category) => {
     const categoryData = projectsData[category?.toLowerCase()];
     if (!categoryData) return [];
-    
+
     return Object.entries(categoryData).map(([id, data]) => ({
         id,
         category: category.toLowerCase(),

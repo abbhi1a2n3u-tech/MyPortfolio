@@ -68,7 +68,7 @@ export default function HomePage() {
                         </div>
 
                         <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4">
-                            Hi, I'm <div className="bg-gradient-to-r inline-block from-blue-600 to-purple-600 bg-clip-text text-transparent animate__animated animate__bounce animate__infinite">Shivam Yadav</div>
+                            Hi, I'm <div className="bg-gradient-to-r inline-block from-blue-600 to-purple-600 bg-clip-text text-transparent">Shivam Yadav</div>
                         </h1>
 
                         <div className="max-w-2xl mx-auto">
